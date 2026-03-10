@@ -4,7 +4,7 @@ This repository provides a guide to set up dual-clutch functionality in RaceRoom
 
 ## Problem
 
-Many racing wheels don't have extra analog pedals for a dedicated clutch. This solution allows you to use a regular clutch pedal combined with a button on your wheel to achieve dual-clutch launching.
+Many racing wheels don't have extra analog paddles. This solution allows you to use a regular clutch pedal combined with a button on your wheel to achieve dual-clutch launching.
 
 ## Required Software
 
