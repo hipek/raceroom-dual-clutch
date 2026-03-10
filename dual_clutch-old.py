@@ -4,12 +4,6 @@ from gremlin.user_script import *
 # ======= USER SETTINGS =======
 mode = ModeVariable("Mode", "Mode in which to use these settings", True)
 
-invert_axis = BoolVariable(
-    "Invert Pedal",
-    "Reverse the clutch pedal axis",
-    False
-)
-
 clutch_pedal = PhysicalInputVariable(
     "Clutch Pedal Axis",
     "Your real clutch pedal axis",
@@ -40,32 +34,26 @@ pedal_dec = clutch_pedal.create_decorator(mode.value)
 button_dec = clutch_button.create_decorator(mode.value)
 
 
-# ======= PEDAL HANDLER =======
 @pedal_dec.axis(clutch_pedal.input_id)
 def pedal_cb(event, vjoy):
     global last_pedal_value, force_override
 
-    if invert_axis.value:
-        last_pedal_value = -event.value
-    else:
-        last_pedal_value = event.value
+    last_pedal_value = -event.value
 
+    # Only send pedal value if override is NOT active
     if not force_override:
-        vjoy[clutch_output.vjoy_id].axis(clutch_output.input_id).value = last_pedal_value
+        vjoy[clutch_output.vjoy_id].axis(clutch_output.input_id).value = event.value
 
 
-# ======= BUTTON HANDLER =======
 @button_dec.button(clutch_button.input_id)
 def button_cb(event, vjoy):
     global force_override, last_pedal_value
 
-    axis = vjoy[clutch_output.vjoy_id].axis(clutch_output.input_id)
-
     if event.is_pressed:
         # Activate forced 100% clutch
         force_override = True
-        axis.value = 1.0
+        vjoy[clutch_output.vjoy_id].axis(clutch_output.input_id).value = 1.0
     else:
         # Return control to pedal
         force_override = False
-        axis.value = last_pedal_value
+        vjoy[clutch_output.vjoy_id].axis(clutch_output.input_id).value = last_pedal_value
